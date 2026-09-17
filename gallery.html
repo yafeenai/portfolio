@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work — Eyafee Al Hossain</title>
+<meta name="description" content="Photography portfolio of Eyafee Al Hossain, based in Halifax, Nova Scotia.">
+<link rel="icon" href="img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="protect.js" defer></script>
+</head>
+<body class="loaded">
+
+<div class="grain" aria-hidden="true"></div>
+
+<header class="site-header" id="top">
+  <a class="brand" href="index.html#top">
+    <img src="img/logo.png" alt="" class="brand-mark">
+    <span>YAFEENAI</span>
+  </a>
+  <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span>
+  </button>
+</header>
+
+<div class="nav-overlay" id="navOverlay" aria-hidden="true">
+  <nav class="overlay-links">
+    <a href="index.html#top">Home</a>
+    <div class="overlay-work">
+      <a href="index.html#work" id="workToggle" class="overlay-work-toggle" aria-expanded="false">Work<svg class="work-caret" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"></path></svg></a>
+      <div class="overlay-cats" id="overlayCats">
+        <a href="index.html#work" data-filter="all">All</a>
+        <a href="gallery.html?cat=weddings" data-filter="weddings">Weddings</a>
+        <a href="gallery.html?cat=events" data-filter="events">Events</a>
+        <a href="gallery.html?cat=concerts" data-filter="concerts">Concerts</a>
+        <a href="gallery.html?cat=aerial" data-filter="aerial">Aerial</a>
+        <a href="gallery.html?cat=astro" data-filter="astro">Astro</a>
+        <a href="gallery.html?cat=selects" data-filter="selects">Selects</a>
+        <a href="gallery.html?cat=design" data-filter="design">Design</a>
+      </div>
+    </div>
+    <a href="about.html">About</a>
+  </nav>
+</div>
+
+<section class="work gallery-page" id="galleryWork">
+  <div class="grid-bar">
+    <p class="grid-bar-label" id="galleryCount"></p>
+    <a href="index.html#top" class="gallery-back">← Home</a>
+  </div>
+  <h1 class="gallery-title" id="galleryTitle">Work</h1>
+  <div class="grid" id="grid"></div>
+  <p class="gallery-empty" id="galleryEmpty" style="display:none">This category couldn't be found. <a href="index.html#work" class="gallery-back">Go back home →</a></p>
+</section>
+
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <button class="lb-close" id="lbClose" aria-label="Close">&times;</button>
+  <button class="lb-prev" id="lbPrev" aria-label="Previous">&#8249;</button>
+  <img src="" alt="" id="lbImg">
+  <button class="lb-next" id="lbNext" aria-label="Next">&#8250;</button>
+  <div class="lb-count" id="lbCount"></div>
+</div>
+
+
+<script src="gallery-data.js"></script>
+<script>
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---- resolve which category this page shows ---- */
+const params = new URLSearchParams(location.search);
+const catSlug = params.get("cat") || "";
+
+let categoryLabel = "";
+let items = [];
+
+if (catSlug === "design") {
+  categoryLabel = "Design";
+  items = DESIGN_IMAGES.map(d => ({ thumb: d.src, full: d.src, label: "Design" }));
+} else {
+  const cat = GALLERY.find(c => c.slug === catSlug);
+  if (cat) {
+    categoryLabel = cat.label;
+    items = cat.images.map(img => ({ thumb: img.thumb, full: img.full, label: cat.label }));
+  }
+}
+
+const galleryTitle = document.getElementById("galleryTitle");
+const galleryCount = document.getElementById("galleryCount");
+const galleryEmpty = document.getElementById("galleryEmpty");
+const grid = document.getElementById("grid");
+
+if (categoryLabel) {
+  document.title = categoryLabel + " — Eyafee Al Hossain";
+  galleryTitle.textContent = categoryLabel;
+  galleryCount.innerHTML = "Viewing — <b>" + categoryLabel + "</b> (" + items.length + ")";
+  document.querySelectorAll('.overlay-cats a[data-filter="' + catSlug + '"]').forEach(a => a.classList.add("active"));
+} else {
+  galleryTitle.textContent = "Not found";
+  galleryCount.textContent = "";
+  grid.style.display = "none";
+  galleryEmpty.style.display = "block";
+}
+
+/* ---- tilt hover ---- */
+function addTiltHover(el) {
+  if (prefersReducedMotion || window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
+  el.addEventListener("mousemove", (e) => {
+    const r = el.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width - 0.5;
+    const py = (e.clientY - r.top) / r.height - 0.5;
+    el.style.transition = "transform 80ms linear";
+    el.style.transform = "perspective(900px) rotateX(" + (-py * 6).toFixed(2) + "deg) rotateY(" + (px * 6).toFixed(2) + "deg)";
+  });
+  el.addEventListener("mouseleave", () => {
+    el.style.transition = "transform 450ms var(--ease)";
+    el.style.transform = "perspective(900px) rotateX(0deg) rotateY(0deg)";
+  });
+}
+
+/* ---- staggered scroll reveal ---- */
+let tileIO = null;
+function revealTileOnScroll(tile) {
+  if (prefersReducedMotion) {
+    tile.classList.add("show");
+    return;
+  }
+  if (!tileIO) {
+    tileIO = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const t = entry.target;
+        const delay = Number(t.dataset.revealDelay || 0);
+        setTimeout(() => t.classList.add("show"), delay);
+        tileIO.unobserve(t);
+      });
+    }, { threshold: 0.12 });
+  }
+  tileIO.observe(tile);
+}
+
+/* ---- lightbox (fly-to ghost + prev/next) ---- */
+const lightbox = document.getElementById("lightbox");
+const lbImg = document.getElementById("lbImg");
+const lbCount = document.getElementById("lbCount");
+let currentItems = [];
+let currentIndex = 0;
+
+function flyToLightbox(originEl) {
+  if (prefersReducedMotion || !originEl) return;
+  const originImg = originEl.querySelector("img");
+  if (!originImg) return;
+
+  const rect = originEl.getBoundingClientRect();
+  const vw = window.innerWidth, vh = window.innerHeight;
+  const naturalW = originImg.naturalWidth || rect.width;
+  const naturalH = originImg.naturalHeight || rect.height;
+  const maxW = Math.min(vw * 0.88, 1200);
+  const maxH = vh * 0.84;
+  let targetW = maxW, targetH = maxW * (naturalH / naturalW);
+  if (targetH > maxH) { targetH = maxH; targetW = maxH * (naturalW / naturalH); }
+  const targetX = (vw - targetW) / 2;
+  const targetY = (vh - targetH) / 2;
+
+  const ghost = document.createElement("img");
+  ghost.src = originImg.currentSrc || originImg.src;
+  ghost.setAttribute("aria-hidden", "true");
+  ghost.style.cssText = "position:fixed; left:" + targetX + "px; top:" + targetY + "px; width:" + targetW + "px; height:" + targetH + "px; margin:0; object-fit:cover; border-radius:0px; z-index:1001; pointer-events:none; transform-origin: top left; transform: translate(" + (rect.left - targetX) + "px, " + (rect.top - targetY) + "px) scale(" + (rect.width / targetW) + ", " + (rect.height / targetH) + "); transition: transform 480ms var(--ease), border-radius 480ms var(--ease), opacity 220ms ease 300ms; will-change: transform;";
+  document.body.appendChild(ghost);
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      ghost.style.transform = "translate(0px, 0px) scale(1, 1)";
+      ghost.style.borderRadius = "4px";
+      ghost.style.opacity = "0";
+    });
+  });
+
+  setTimeout(() => ghost.remove(), 560);
+}
+
+function openLightbox(list, index) {
+  currentItems = list;
+  currentIndex = index;
+  renderLightbox();
+  lightbox.classList.add("open");
+  lightbox.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+}
+function renderLightbox() {
+  const item = currentItems[currentIndex];
+  lbImg.src = item.src;
+  lbImg.alt = item.label + " — Eyafee Al Hossain";
+  lbCount.textContent = (currentIndex + 1) + " / " + currentItems.length + " — " + item.label;
+}
+function closeLightbox() {
+  lightbox.classList.remove("open");
+  lightbox.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+}
+function nextImage() { currentIndex = (currentIndex + 1) % currentItems.length; renderLightbox(); }
+function prevImage() { currentIndex = (currentIndex - 1 + currentItems.length) % currentItems.length; renderLightbox(); }
+
+document.getElementById("lbClose").addEventListener("click", closeLightbox);
+document.getElementById("lbNext").addEventListener("click", nextImage);
+document.getElementById("lbPrev").addEventListener("click", prevImage);
+lightbox.addEventListener("click", e => { if (e.target === lightbox) closeLightbox(); });
+document.addEventListener("keydown", e => {
+  if (!lightbox.classList.contains("open")) return;
+  if (e.key === "Escape") closeLightbox();
+  if (e.key === "ArrowRight") nextImage();
+  if (e.key === "ArrowLeft") prevImage();
+});
+
+/* ---- build the grid for this category ---- */
+function buildGrid() {
+  items.forEach((item, i) => {
+    const tile = document.createElement("div");
+    tile.className = "tile";
+    tile.dataset.revealDelay = (i % 4) * 70;
+
+    const img = document.createElement("img");
+    img.src = item.thumb;
+    img.loading = "lazy";
+    img.alt = item.label + " — Eyafee Al Hossain photography";
+    tile.appendChild(img);
+
+    const tag = document.createElement("span");
+    tag.className = "tile-tag";
+    tag.textContent = item.label;
+    tile.appendChild(tag);
+
+    tile.addEventListener("click", () => {
+      flyToLightbox(tile);
+      openLightbox(items.map(it => ({ src: it.full, label: it.label })), i);
+    });
+    addTiltHover(tile);
+    grid.appendChild(tile);
+    revealTileOnScroll(tile);
+  });
+}
+if (categoryLabel) buildGrid();
+
+/* ---- compact animated nav dropdown (opens in place under the menu button, doesn't cover the page) ---- */
+const navToggle = document.getElementById("navToggle");
+const navOverlay = document.getElementById("navOverlay");
+function openOverlay() {
+  navOverlay.classList.add("open");
+  navOverlay.setAttribute("aria-hidden", "false");
+  navToggle.classList.add("open");
+  navToggle.setAttribute("aria-expanded", "true");
+}
+function closeOverlay() {
+  navOverlay.classList.remove("open");
+  navOverlay.setAttribute("aria-hidden", "true");
+  navToggle.classList.remove("open");
+  navToggle.setAttribute("aria-expanded", "false");
+  if (workToggle) workToggle.setAttribute("aria-expanded", "false");
+  if (overlayCatsWrap) overlayCatsWrap.classList.remove("open");
+}
+navToggle.addEventListener("click", (e) => {
+  e.stopPropagation();
+  navOverlay.classList.contains("open") ? closeOverlay() : openOverlay();
+});
+document.addEventListener("click", (e) => {
+  if (!navOverlay.classList.contains("open")) return;
+  if (navOverlay.contains(e.target) || navToggle.contains(e.target)) return;
+  closeOverlay();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && navOverlay.classList.contains("open")) closeOverlay();
+});
+
+/* ---- "Work" expands into the category submenu on first click; clicking again navigates ---- */
+const workToggle = document.getElementById("workToggle");
+const overlayCatsWrap = document.getElementById("overlayCats");
+if (workToggle && overlayCatsWrap) {
+  workToggle.addEventListener("click", (e) => {
+    const isOpen = workToggle.getAttribute("aria-expanded") === "true";
+    if (!isOpen) {
+      e.preventDefault();
+      workToggle.setAttribute("aria-expanded", "true");
+      overlayCatsWrap.classList.add("open");
+    }
+  });
+}
+
+</script>
+</body>
+</html>
