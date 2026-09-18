@@ -72,6 +72,16 @@ const GALLERY = [
     ]
   },
   {
+    slug: "food",
+    label: "Food",
+    images: [
+      { thumb: "photos/food/food1.png", full: "photos/food/food1.png" },
+      { thumb: "photos/food/food2.png", full: "photos/food/food2.png" },
+      { thumb: "photos/food/food3.png", full: "photos/food/food3.png" },
+      { thumb: "photos/food/food4.png", full: "photos/food/food4.png" }
+    ]
+  },
+  {
     slug: "selects",
     label: "Selects",
     images: [

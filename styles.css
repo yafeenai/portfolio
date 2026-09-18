@@ -446,3 +446,54 @@ section { position: relative; z-index: 2; }
   .current-cards { background: none; gap: 22px; }
   .current-card { padding: 0; }
 }
+
+/* ---- Films page ---- */
+body.films-scroll { scroll-snap-type: y proximity; }
+.films-intro { max-width: var(--max); margin: 0 auto; padding: 0 32px; }
+.films-intro-sub { font-family: var(--sans); font-size: 15px; color: var(--muted-dark); max-width: 480px; margin: 8px 0 0; line-height: 1.6; }
+.films-intro-sub a { color: var(--cream); border-bottom: 1px solid var(--border-dark); padding-bottom: 1px; }
+.films-intro-sub a:hover { border-color: var(--cream); }
+
+.films-reel { display: flex; flex-direction: column; margin-top: 56px; }
+.film-slide { position: relative; height: 100svh; width: 100%; overflow: hidden; scroll-snap-align: start; background: var(--bg-dark-2); }
+.film-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.film-scrim { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,9,8,0.12) 0%, rgba(10,9,8,0.05) 32%, rgba(10,9,8,0.88) 100%); }
+
+.film-copy { position: absolute; left: 0; right: 0; bottom: 0; padding: 0 32px 64px; max-width: 720px; opacity: 0; transform: translateY(18px); transition: opacity 750ms var(--ease), transform 750ms var(--ease); pointer-events: none; }
+.film-slide.show .film-copy { opacity: 1; transform: none; }
+.film-copy .eyebrow { color: var(--muted-dark); margin-bottom: 10px; }
+.film-title { font-family: var(--display); font-weight: 400; text-transform: uppercase; color: var(--cream); font-size: clamp(30px, 5vw, 52px); line-height: 0.98; letter-spacing: -0.01em; margin: 0 0 14px; }
+.film-desc { font-family: var(--sans); font-size: 15px; line-height: 1.6; color: rgba(245,242,234,0.82); max-width: 46ch; margin: 0 0 22px; }
+.film-watch { display: inline-flex; align-items: center; gap: 10px; font-family: var(--sans); font-size: 12.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cream); border-bottom: 1px solid var(--border-dark); padding-bottom: 4px; transition: opacity 200ms var(--ease), border-color 200ms var(--ease); pointer-events: auto; }
+.film-watch:hover { opacity: 0.72; border-color: var(--cream); }
+.film-watch-icon { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: 1px solid var(--border-dark); border-radius: 50%; font-size: 10px; flex: none; }
+
+.film-count { position: absolute; right: 26px; bottom: 36px; display: flex; flex-direction: column; align-items: center; gap: 6px; font-family: var(--sans); font-size: 12px; font-weight: 700; color: var(--cream); }
+.film-count-bar { width: 1px; height: 22px; background: var(--border-dark); }
+.film-count-total { color: var(--muted-dark); font-weight: 600; }
+
+.film-scrollcue { position: absolute; left: 50%; bottom: 30px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--muted-dark); opacity: 0.65; }
+.film-scrollcue .dot { width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
+
+@media (max-width: 720px) {
+  .film-copy { padding: 0 20px 44px; max-width: 92%; }
+  .film-count { right: 16px; bottom: 18px; }
+  .films-reel { margin-top: 40px; }
+}
+
+/* ---- Films: click-to-play button over the poster ---- */
+.film-playbtn {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 78px; height: 78px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(23,22,20,0.42); border: 1.5px solid rgba(245,242,234,0.75);
+  color: var(--cream); cursor: pointer;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  transition: opacity 260ms var(--ease), transform 260ms var(--ease), background 200ms var(--ease);
+}
+.film-playbtn:hover { background: rgba(23,22,20,0.6); transform: translate(-50%, -50%) scale(1.06); }
+.film-playbtn svg { margin-left: 3px; }
+
+
+/* ---- Films: let clicks reach the native video controls ---- */
+.film-scrim, .film-count, .film-scrollcue { pointer-events: none; }
