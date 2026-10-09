@@ -111,3 +111,12 @@ const DESIGN_IMAGES = [
   { src: "photos/design/design-04.jpg", span: "m-tall" },
   { src: "photos/design/design-05.jpg", span: "m-wide" }
 ];
+
+/* Cache-buster: bump this whenever you replace a photo with the same file name,
+   so visitors' browsers download the new version instead of showing the old one. */
+const ASSET_VERSION = "20261009";
+GALLERY.forEach(c => c.images.forEach(i => {
+  i.thumb += "?v=" + ASSET_VERSION;
+  i.full += "?v=" + ASSET_VERSION;
+}));
+DESIGN_IMAGES.forEach(d => { d.src += "?v=" + ASSET_VERSION; });
