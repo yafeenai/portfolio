@@ -40,10 +40,12 @@ const GALLERY = [
       { thumb: "photos/concerts/concerts-03.jpg", full: "photos/concerts/concerts-03.jpg" },
       { thumb: "photos/concerts/concerts-04.jpg", full: "photos/concerts/concerts-04.jpg" },
       { thumb: "photos/concerts/concerts-05.jpg", full: "photos/concerts/concerts-05.jpg" },
+      { thumb: "photos/concerts/concerts-06.jpg", full: "photos/concerts/concerts-06.jpg" },
+      { thumb: "photos/concerts/concerts-07.jpg", full: "photos/concerts/concerts-07.jpg" },
+      { thumb: "photos/concerts/concerts-08.jpg", full: "photos/concerts/concerts-08.jpg" },
       { thumb: "photos/concerts/concerts-09.jpg", full: "photos/concerts/concerts-09.jpg" },
       { thumb: "photos/concerts/concerts-10.jpg", full: "photos/concerts/concerts-10.jpg" },
-      { thumb: "photos/concerts/concerts-11.jpg", full: "photos/concerts/concerts-11.jpg" },
-      { thumb: "photos/concerts/concerts-13.jpg", full: "photos/concerts/concerts-13.jpg" }
+      { thumb: "photos/concerts/concerts-11.jpg", full: "photos/concerts/concerts-11.jpg" }
     ]
   },
   {
@@ -82,10 +84,18 @@ const GALLERY = [
     ]
   },
   {
+    slug: "product",
+    label: "Product",
+    images: [
+      { thumb: "photos/product/product-01.jpg", full: "photos/product/product-01.jpg" },
+      { thumb: "photos/product/product-02.jpg", full: "photos/product/product-02.jpg" },
+      { thumb: "photos/product/product-03.jpg", full: "photos/product/product-03.jpg" }
+    ]
+  },
+  {
     slug: "selects",
     label: "Selects",
     images: [
-      { thumb: "photos/selects/selects-01.jpg", full: "photos/selects/selects-01.jpg" },
       { thumb: "photos/selects/selects-02.jpg", full: "photos/selects/selects-02.jpg" },
       { thumb: "photos/selects/selects-03.jpg", full: "photos/selects/selects-03.jpg" },
       { thumb: "photos/selects/selects-04.jpg", full: "photos/selects/selects-04.jpg" },

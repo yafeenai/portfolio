@@ -95,6 +95,7 @@
         <a href="gallery.html?cat=aerial" data-filter="aerial">Aerial</a>
         <a href="gallery.html?cat=astro" data-filter="astro">Astro</a>
         <a href="gallery.html?cat=food" data-filter="food">Food</a>
+        <a href="gallery.html?cat=product" data-filter="product">Product</a>
         <a href="gallery.html?cat=selects" data-filter="selects">Selects</a>
         <a href="gallery.html?cat=design" data-filter="design">Design</a>
       </div>
@@ -106,7 +107,7 @@
 
 <section class="hero">
   <div class="hero-media">
-    <img src="photos/weddings/weddings-04.jpg" alt="" id="heroImg" class="hero-slide is-active">
+    <img src="img/profile.jpg" alt="Eyafee Al Hossain" id="heroImg" class="hero-slide is-active">
     <img alt="" id="heroImgB" class="hero-slide">
   </div>
   <div class="hero-copy">
@@ -530,7 +531,11 @@ function initHeroSlideshow() {
     return a;
   }
 
-  let queue = shuffle(pool);
+  // Your photo shows first (set in the HTML), then a random wedding shot, then everything shuffled.
+  const weddings = shuffle(pool.filter(src => src.includes("/weddings/")));
+  const firstWedding = weddings[0];
+  let queue = shuffle(pool.filter(src => src !== firstWedding));
+  if (firstWedding) queue.unshift(firstWedding);
   let qi = 0;
   function nextSrc() {
     if (qi >= queue.length) {
